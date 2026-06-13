@@ -1193,23 +1193,37 @@ document.addEventListener('keydown', function(e) {
   function resize() {
     W = canvas.width  = window.innerWidth;
     H = canvas.height = window.innerHeight;
-    /* Recalculate logo centre from DOM */
+    /* Only re-measure logo position when NOT mid-sequence
+       so scroll during rise/converge/hold doesn't shift targets */
+    if (phase === PHASE_IDLE || phase === PHASE_AMBIENT) {
+      measureLogo();
+    }
+  }
+
+  function measureLogo() {
     var el = document.getElementById('logo-wrap');
     if (el) {
-      var r = el.getBoundingClientRect();
+      /* Use offsetTop + offsetParent chain to get position
+         independent of scroll — not affected by getBoundingClientRect */
+      var top = 0, left = 0, node = el;
+      while (node) {
+        top  += node.offsetTop  || 0;
+        left += node.offsetLeft || 0;
+        node  = node.offsetParent;
+      }
       logoBox = {
-        cx: r.left + r.width  * 0.5,
-        cy: r.top  + r.height * 0.5,
-        w:  r.width,
-        h:  r.height
+        cx: left + el.offsetWidth  * 0.5,
+        cy: top  + el.offsetHeight * 0.5,
+        w:  el.offsetWidth,
+        h:  el.offsetHeight
       };
     }
   }
 
   resize();
+  /* Lock logo position once layout is stable — offsetTop is scroll-independent */
+  setTimeout(function() { measureLogo(); }, 500);
   window.addEventListener('resize', resize);
-  /* Re-measure after fonts / layout settle */
-  setTimeout(resize, 400);
 
   var COLORS = ['#4DC8F0', '#9B1D6E', '#B8CC2B'];
 
@@ -1321,9 +1335,15 @@ document.addEventListener('keydown', function(e) {
 
     ctx.clearRect(0, 0, W, H);
 
+    /* Scroll offset — canvas is fixed, page content scrolls.
+       We subtract scrollY when drawing doc-space coords so particles
+       stay locked to the logo position through RISE/CONVERGE/HOLD/DISPERSE.
+       After AMBIENT they live in viewport space and ignore scroll. */
+    var scrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+
     /* ── Phase transitions ── */
     if (phase === PHASE_IDLE && elapsed >= T_DELAY_START) {
-      resize(); /* measure logo position fresh */
+      measureLogo(); /* lock logo position fresh before particles form */
       initParticles();
       setPhase(PHASE_RISE, ts);
     }
@@ -1335,21 +1355,25 @@ document.addEventListener('keydown', function(e) {
     } else if (phase === PHASE_CONVERGE && t >= T_CONVERGE_DUR) {
       setPhase(PHASE_HOLD, ts); t = 0;
     } else if (phase === PHASE_HOLD && t >= T_HOLD_DUR) {
-      /* Assign disperse velocities */
+      /* Assign disperse velocities — use scroll-adjusted current position */
       var box2 = logoBox || { cx: W * 0.5, cy: H * 0.42 };
       particles.forEach(function(p) {
-        var dx = p.x - box2.cx;
-        var dy = p.y - box2.cy;
+        /* p.x / p.y are in doc-space; convert to viewport for disperse origin */
+        var vx = p.x;
+        var vy = p.y - scrollY;
+        var dx = vx - (box2.cx);
+        var dy = vy - (box2.cy - scrollY);
         var dist = Math.sqrt(dx * dx + dy * dy) || 1;
         var speed = rand(3.5, 7.5);
         p.dvx = (dx / dist) * speed + rand(-1, 1);
         p.dvy = (dy / dist) * speed + rand(-2, 0.5);
-        p.dispX = p.x;
-        p.dispY = p.y;
+        /* store disperse origin in viewport space */
+        p.dispX = vx;
+        p.dispY = vy;
       });
       setPhase(PHASE_DISPERSE, ts); t = 0;
     } else if (phase === PHASE_DISPERSE && t >= T_DISPERSE_DUR + T_FADE_DUR) {
-      /* Anchor ambient start */
+      /* Anchor ambient — already in viewport space from disperse end */
       particles.forEach(function(p) { p.ax = p.x; p.ay = p.y; });
       setPhase(PHASE_AMBIENT, ts); t = 0;
     }
@@ -1357,16 +1381,21 @@ document.addEventListener('keydown', function(e) {
     /* ── Update & draw ── */
     particles.forEach(function(p) {
       var prog, ease;
+      /* drawX/drawY = final canvas coords (viewport space) */
+      var drawX, drawY;
 
       if (phase === PHASE_IDLE) {
         return; /* don't draw yet */
 
       } else if (phase === PHASE_RISE) {
+        /* positions stored in doc-space, subtract scroll to get viewport */
         prog = Math.min((t / T_RISE_DUR) + p.offset, 1);
         ease = easeOutExpo(prog);
         p.x = lerp(p.sx, p.rx, ease);
         p.y = lerp(p.sy, p.ry, ease);
         p.alpha = Math.min(prog * 2.5, 0.45);
+        drawX = p.x;
+        drawY = p.y - scrollY;
 
       } else if (phase === PHASE_CONVERGE) {
         prog = Math.min((t / T_CONVERGE_DUR) - p.offset * 0.5, 1);
@@ -1375,37 +1404,45 @@ document.addEventListener('keydown', function(e) {
         p.x = lerp(p.rx, p.tx, ease);
         p.y = lerp(p.ry, p.ty, ease);
         p.alpha = lerp(0.45, 0.72, ease);
+        drawX = p.x;
+        drawY = p.y - scrollY;
 
       } else if (phase === PHASE_HOLD) {
-        /* Gentle breathe on the ring */
+        /* Gentle breathe on the ring — doc-space targets, scroll-offset to draw */
         var breathe = Math.sin(ts * 0.0018 + p.r * 0.8) * 1.8;
         p.x = p.tx + Math.cos(ts * 0.0012 + p.r) * breathe;
         p.y = p.ty + Math.sin(ts * 0.0012 + p.r) * breathe;
         p.alpha = 0.72;
+        drawX = p.x;
+        drawY = p.y - scrollY;
 
       } else if (phase === PHASE_DISPERSE) {
+        /* dispX/dispY are already viewport-space */
         prog = Math.min(t / T_DISPERSE_DUR, 1);
         ease = easeOutExpo(prog);
         p.x = p.dispX + p.dvx * ease * 80;
         p.y = p.dispY + p.dvy * ease * 80;
-        /* fade out smoothly */
         var fadeProg = Math.min(t / (T_DISPERSE_DUR + T_FADE_DUR), 1);
         p.alpha = lerp(0.72, 0.08, easeInOutCubic(fadeProg));
+        drawX = p.x;
+        drawY = p.y;
 
       } else if (phase === PHASE_AMBIENT) {
+        /* purely viewport-space — drifts freely, ignores scroll */
         p.x += p.avx;
         p.y += p.avy;
-        /* very soft pulse */
         p.alpha = 0.07 + Math.abs(Math.sin(ts * 0.0004 + p.r * 1.3)) * 0.06;
-        /* wrap around viewport */
         if (p.x < -20)    p.x = W + 20;
         if (p.x > W + 20) p.x = -20;
         if (p.y < -20)    p.y = H + 20;
         if (p.y > H + 20) p.y = -20;
+        drawX = p.x;
+        drawY = p.y;
       }
 
+      if (drawX === undefined) return;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.arc(drawX, drawY, p.r, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
       ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
       ctx.fill();
