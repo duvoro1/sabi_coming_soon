@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ── FAVICON ── -->
+<!-- Inline SVG favicon — works on Vercel, Netlify, GitHub Pages, no external file needed -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='532 225 406 506'%3E%3Cpolygon fill='%23221e21' points='532.11 354.12 733.05 225.36 937.89 354.12 937.89 605.78 735 730.64 532.11 605.78 532.11 354.12'/%3E%3Cpolygon fill='%2353b4f4' points='609.09 384.44 664.77 418.03 730.93 375.4 730.93 309.27 609.09 384.44'/%3E%3Cpolygon fill='%2353b4f4' points='602.49 390.16 602.49 456.84 686.11 510.95 730.93 483.62 730.93 468.86 602.49 390.16'/%3E%3Cpolygon fill='%2353b4f4' points='677.37 545.38 730.93 579.81 730.93 645.94 624.9 579.26 677.37 545.38'/%3E%3Cpolygon fill='%23a62561' points='740.22 309.27 740.22 374.31 793.24 410.38 847.89 377.04 740.22 309.27'/%3E%3Cpolygon fill='%23d4e44c' points='740.22 470.5 788.86 438.8 861.01 485.26 803.07 522.42 740.22 483.62 740.22 470.5'/%3E%3Cpolygon fill='%23d4e44c' points='740.22 579.26 803.62 539.37 803.62 532.26 867.02 492.36 867.02 566.69 740.22 645.94 740.22 579.26'/%3E%3C/svg%3E">
+<!-- Fallback PNG favicon for older browsers / Safari pinned tab -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='532 225 406 506'%3E%3Cpolygon fill='%23221e21' points='532.11 354.12 733.05 225.36 937.89 354.12 937.89 605.78 735 730.64 532.11 605.78 532.11 354.12'/%3E%3Cpolygon fill='%2353b4f4' points='609.09 384.44 664.77 418.03 730.93 375.4 730.93 309.27 609.09 384.44'/%3E%3Cpolygon fill='%2353b4f4' points='602.49 390.16 602.49 456.84 686.11 510.95 730.93 483.62 730.93 468.86 602.49 390.16'/%3E%3Cpolygon fill='%2353b4f4' points='677.37 545.38 730.93 579.81 730.93 645.94 624.9 579.26 677.37 545.38'/%3E%3Cpolygon fill='%23a62561' points='740.22 309.27 740.22 374.31 793.24 410.38 847.89 377.04 740.22 309.27'/%3E%3Cpolygon fill='%23d4e44c' points='740.22 470.5 788.86 438.8 861.01 485.26 803.07 522.42 740.22 483.62 740.22 470.5'/%3E%3Cpolygon fill='%23d4e44c' points='740.22 579.26 803.62 539.37 803.62 532.26 867.02 492.36 867.02 566.69 740.22 645.94 740.22 579.26'/%3E%3C/svg%3E">
+<!-- OG / Social share meta -->
+<meta property="og:title" content="SABI Arts and Prints — Coming Soon">
+<meta property="og:description" content="Premium print studio. Metal, canvas, t-shirt and 3D prints. Launching July 15, 2026.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#F6F5F1">
+<title>SABI Arts and Prints — Coming Soon</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { height: 100%; scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: #F6F5F1;
+  color: #1C1C1C;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#particle-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cmyk-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  display: flex;
+  z-index: 100;
+}
+.cmyk-bottom {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  display: flex;
+  z-index: 100;
+}
+.cb-c { flex: 1; background: #4DC8F0; }
+.cb-m { flex: 1; background: #9B1D6E; }
+.cb-y { flex: 1; background: #B8CC2B; }
+
+.site {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.hero {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 100px 24px 80px;
+}
+
+/* ── LOGO ── */
+.logo-wrap {
+  width: 160px;
+  height: 106px;
+  margin-bottom: 36px;
+  position: relative;
+  flex-shrink: 0;
+}
+.logo-wrap svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+#hex-outline {
+  fill: none;
+  stroke: #1C1C1C;
+  stroke-width: 6;
+  stroke-dasharray: 1600;
+  stroke-dashoffset: 1600;
+  animation: drawHex 1.2s 0.4s cubic-bezier(.4,0,.2,1) forwards,
+             fadeOutStroke 0.5s 1.7s ease forwards;
+}
+@keyframes drawHex    { to { stroke-dashoffset: 0; } }
+@keyframes fadeOutStroke { to { opacity: 0; } }
+
+.f-k  { opacity: 0; animation: fillIn 0.3s 1.55s ease forwards; }
+.f-c1 { opacity: 0; animation: fillIn 0.3s 1.75s ease forwards; }
+.f-c2 { opacity: 0; animation: fillIn 0.3s 1.95s ease forwards; }
+.f-c3 { opacity: 0; animation: fillIn 0.3s 2.15s ease forwards; }
+.f-m  { opacity: 0; animation: fillIn 0.3s 2.35s ease forwards; }
+.f-y1 { opacity: 0; animation: fillIn 0.3s 2.55s ease forwards; }
+.f-y2 { opacity: 0; animation: fillIn 0.3s 2.75s ease forwards; }
+@keyframes fillIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── TYPE ── */
+.wordmark {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(28px, 8vw, 60px);
+  letter-spacing: 14px;
+  text-transform: uppercase;
+  color: #1C1C1C;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: riseIn 0.8s 3.0s cubic-bezier(.22,1,.36,1) forwards;
+}
+.tagline {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #AAAAAA;
+  margin-bottom: 48px;
+  opacity: 0;
+  animation: riseIn 0.8s 3.15s cubic-bezier(.22,1,.36,1) forwards;
+}
+.rule {
+  width: 40px;
+  height: 1px;
+  background: #D8D6D0;
+  margin-bottom: 32px;
+  opacity: 0;
+  animation: fadeIn 0.6s 3.25s ease forwards;
+}
+
+.status {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #4DC8F0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: riseIn 0.8s 3.35s cubic-bezier(.22,1,.36,1) forwards;
+}
+.pulse {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #4DC8F0;
+  flex-shrink: 0;
+  animation: pulse 2.5s 5s ease infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.25; transform: scale(1.9); }
+}
+
+.countdown {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin-bottom: 52px;
+  opacity: 0;
+  animation: riseIn 0.8s 3.45s cubic-bezier(.22,1,.36,1) forwards;
+}
+.cd-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 60px;
+}
+.cd-num {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(30px, 6vw, 52px);
+  color: #1C1C1C;
+  line-height: 1;
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+}
+.cd-label {
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #BBBBBB;
+}
+.cd-sep {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  font-size: 38px;
+  color: #D8D6D0;
+  line-height: 1;
+  margin-top: 5px;
+  padding: 0 2px;
+  user-select: none;
+}
+
+.btn-wrap {
+  opacity: 0;
+  animation: riseIn 0.8s 3.55s cubic-bezier(.22,1,.36,1) forwards;
+  margin-bottom: 52px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #1C1C1C;
+  border: 1.5px solid #1C1C1C;
+  padding: 14px 28px;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+.btn:hover { background: #1C1C1C; color: #F6F5F1; }
+.btn-arrow { transition: transform 0.25s ease; display: inline-block; }
+.btn:hover .btn-arrow { transform: translateX(5px); }
+
+.social {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  opacity: 0;
+  animation: riseIn 0.8s 3.65s cubic-bezier(.22,1,.36,1) forwards;
+  margin-bottom: 60px;
+}
+.social a {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #BBBBBB;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.social a:hover { color: #1C1C1C; border-color: #1C1C1C; }
+.social svg { width: 13px; height: 13px; fill: currentColor; flex-shrink: 0; }
+
+.foot {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #CCCCCC;
+  padding: 0 0 40px;
+  opacity: 0;
+  animation: fadeIn 0.6s 3.75s ease forwards;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.foot-divider { color: #D8D6D0; font-size: 11px; }
+.foot a { color: inherit; text-decoration: none; transition: color 0.2s; }
+.foot a:hover { color: #888; }
+.foot-cmyk {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.foot-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+}
+
+/* ═══ OVERLAY ═══ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #F6F5F1;
+  z-index: 200;
+  overflow-y: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+  -webkit-overflow-scrolling: touch;
+}
+.overlay.open { opacity: 1; pointer-events: all; }
+
+.overlay-inner {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 72px 0 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.overlay-close {
+  position: fixed;
+  top: 20px; right: 24px;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #888;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 210;
+  transition: color 0.2s;
+  padding: 8px;
+}
+.overlay-close:hover { color: #1C1C1C; }
+.close-x {
+  width: 16px; height: 16px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.close-x::before,
+.close-x::after {
+  content: '';
+  position: absolute;
+  width: 14px; height: 1.5px;
+  background: currentColor;
+}
+.close-x::before { transform: rotate(45deg); }
+.close-x::after  { transform: rotate(-45deg); }
+
+.overlay-eyebrow {
+  font-size: 9px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #AAAAAA;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.overlay-title {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(22px, 5vw, 38px);
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  color: #1C1C1C;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.overlay-sub {
+  font-size: 13px;
+  color: #999;
+  line-height: 1.8;
+  max-width: 420px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.services {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  width: 100%;
+  margin-bottom: 2px;
+}
+.svc {
+  background: #fff;
+  padding: 28px 28px 36px;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.svc-desc { font-size: 12px; color: #999; line-height: 1.75; flex: 1; }
+.svc-num {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: #DDDDDD;
+  margin-bottom: 16px;
+}
+.svc-icon { width: 30px; height: 30px; margin-bottom: 14px; display: block; }
+.svc-name {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #1C1C1C;
+  margin-bottom: 8px;
+}
+.svc-accent { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; }
+
+.feature-bar {
+  width: 100%;
+  background: #1C1C1C;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 2px;
+}
+.feature-bar-left { text-align: left; }
+.feature-eyebrow {
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #4DC8F0;
+  margin-bottom: 8px;
+}
+.feature-title {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.feature-desc { font-size: 12px; color: #666; line-height: 1.75; max-width: 320px; }
+.feature-tags { display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
+.ftag {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.ftag-ar { color: #4DC8F0; border-color: rgba(77,200,240,0.25); }
+.ftag-ed { color: #B8CC2B; border-color: rgba(184,204,43,0.25); }
+
+.feature-section {
+  width: 100%;
+  background: #1C1C1C;
+  margin-bottom: 2px;
+}
+.feature-header {
+  padding: 28px 28px 20px;
+  text-align: center;
+  border-bottom: 1px solid #252525;
+}
+.feature-main-desc {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.7;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.feature-eyebrow {
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #4DC8F0;
+  margin-bottom: 8px;
+}
+.feature-main-title {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.feature-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: #252525;
+}
+.feat-card {
+  background: #181818;
+  padding: 24px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.feat-card-label {
+  font-size: 8px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid;
+  align-self: flex-start;
+}
+.feat-label-ar { color: #4DC8F0; border-color: rgba(77,200,240,0.3); }
+.feat-label-ed { color: #B8CC2B; border-color: rgba(184,204,43,0.3); }
+.feat-card-title {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #ccc;
+}
+.feat-wireframe {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0;
+  flex: 1;
+  min-height: 180px;
+}
+.feat-wireframe svg {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+}
+.feat-card-desc {
+  font-size: 11px;
+  color: #555;
+  line-height: 1.75;
+}
+.feat-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+.feat-pill {
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid;
+}
+.feat-pill-ar { color: #4DC8F0; border-color: rgba(77,200,240,0.2); }
+.feat-pill-ed { color: #B8CC2B; border-color: rgba(184,204,43,0.2); }
+@media (max-width: 540px) {
+  .feature-cards { grid-template-columns: 1fr; }
+  .feature-header { padding: 24px 20px 16px; }
+  .feat-card { padding: 20px; }
+}
+.overlay-note {
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #CCCCCC;
+  margin-top: 36px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@media (max-width: 540px) {
+  .services { grid-template-columns: 1fr; }
+  .countdown { gap: 2px; }
+  .cd-unit { min-width: 46px; }
+  .cd-num  { font-size: 26px; }
+  .cd-sep  { font-size: 26px; margin-top: 2px; }
+  .logo-wrap { width: 130px; height: 86px; }
+  .wordmark { letter-spacing: 10px; }
+}
+
+/* ═══ LOADER ═══ */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: #F6F5F1;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  transition: opacity 0.7s ease, visibility 0.7s ease;
+}
+#loader.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.loader-lockup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  animation: lockupPulse 1.8s ease-in-out infinite;
+}
+@keyframes lockupPulse {
+  0%, 100% { opacity: 1;    transform: scale(1); }
+  50%       { opacity: 0.15; transform: scale(0.94); }
+}
+.loader-hex svg {
+  width: 86px;
+  height: 86px;
+  overflow: visible;
+  display: block;
+}
+.loader-wordmark {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: 12px;
+  text-transform: uppercase;
+  color: #1C1C1C;
+  line-height: 1;
+}
+.loader-tagline {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #AAAAAA;
+  margin-top: -10px;
+}
+.loader-status {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 9px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #CCCCCC;
+  animation: statusBlink 1.8s ease-in-out infinite;
+}
+@keyframes statusBlink {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 0.15; }
+}
+.loader-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  display: flex;
+  overflow: hidden;
+}
+.loader-bar-fill {
+  height: 100%;
+  animation: loaderBarGrow 1.8s cubic-bezier(.4,0,.2,1) forwards;
+}
+.lbc { flex: 1; background: #4DC8F0; transform: scaleX(0); transform-origin: left; animation: loaderBarGrow 1.8s 0.1s cubic-bezier(.4,0,.2,1) forwards; }
+.lbm { flex: 1; background: #9B1D6E; transform: scaleX(0); transform-origin: left; animation: loaderBarGrow 1.8s 0.2s cubic-bezier(.4,0,.2,1) forwards; }
+.lby { flex: 1; background: #B8CC2B; transform: scaleX(0); transform-origin: left; animation: loaderBarGrow 1.8s 0.3s cubic-bezier(.4,0,.2,1) forwards; }
+@keyframes loaderBarGrow {
+  to { transform: scaleX(1); }
+}
+
+</style>
+</head>
+<body>
+
+
+<div id="loader" role="status" aria-label="Loading SABI Arts and Prints">
+
+  <div class="loader-lockup" aria-hidden="true">
+
+    <!-- Hex mark -->
+    <div class="loader-hex">
+      <svg viewBox="532 225 406 506" xmlns="http://www.w3.org/2000/svg">
+        <polygon fill="#221e21"
+          points="532.11 354.12 733.05 225.36 937.89 354.12 937.89 605.78 735 730.64 532.11 605.78 532.11 354.12"/>
+        <polygon fill="#53b4f4"
+          points="609.09 384.44 664.77 418.03 730.93 375.4 730.93 309.27 609.09 384.44"/>
+        <polygon fill="#53b4f4"
+          points="602.49 390.16 602.49 456.84 686.11 510.95 730.93 483.62 730.93 468.86 602.49 390.16"/>
+        <polygon fill="#53b4f4"
+          points="677.37 545.38 730.93 579.81 730.93 645.94 624.9 579.26 677.37 545.38"/>
+        <polygon fill="#a62561"
+          points="740.22 309.27 740.22 374.31 793.24 410.38 847.89 377.04 740.22 309.27"/>
+        <polygon fill="#d4e44c"
+          points="740.22 470.5 788.86 438.8 861.01 485.26 803.07 522.42 740.22 483.62 740.22 470.5"/>
+        <polygon fill="#d4e44c"
+          points="740.22 579.26 803.62 539.37 803.62 532.26 867.02 492.36 867.02 566.69 740.22 645.94 740.22 579.26"/>
+      </svg>
+    </div>
+
+    <!-- Wordmark -->
+    <div class="loader-wordmark">SABI</div>
+    <div class="loader-tagline">Arts &amp; Prints</div>
+
+  </div>
+
+  <div class="loader-status">Loading</div>
+
+  <div class="loader-bar" aria-hidden="true">
+    <div class="lbc"></div>
+    <div class="lbm"></div>
+    <div class="lby"></div>
+  </div>
+
+</div>
+
+<canvas id="particle-canvas" aria-hidden="true"></canvas>
+
+<div class="cmyk-bar" aria-hidden="true">
+  <span class="cb-c"></span><span class="cb-m"></span><span class="cb-y"></span>
+</div>
+
+<div class="site">
+  <section class="hero">
+
+    <div class="logo-wrap" id="logo-wrap" role="img" aria-label="SABI Arts and Prints logo">
+      <svg viewBox="532 225 406 506" xmlns="http://www.w3.org/2000/svg">
+        <polygon id="hex-outline"
+          points="532.11 354.12 733.05 225.36 937.89 354.12 937.89 605.78 735 730.64 532.11 605.78 532.11 354.12"/>
+        <polygon class="f-k" fill="#221e21"
+          points="532.11 354.12 733.05 225.36 937.89 354.12 937.89 605.78 735 730.64 532.11 605.78 532.11 354.12"/>
+        <polygon class="f-c1" fill="#53b4f4"
+          points="609.09 384.44 664.77 418.03 730.93 375.4 730.93 309.27 609.09 384.44"/>
+        <polygon class="f-c2" fill="#53b4f4"
+          points="602.49 390.16 602.49 456.84 686.11 510.95 730.93 483.62 730.93 468.86 602.49 390.16"/>
+        <polygon class="f-c3" fill="#53b4f4"
+          points="677.37 545.38 730.93 579.81 730.93 645.94 624.9 579.26 677.37 545.38"/>
+        <polygon class="f-m" fill="#a62561"
+          points="740.22 309.27 740.22 374.31 793.24 410.38 847.89 377.04 740.22 309.27"/>
+        <polygon class="f-y1" fill="#d4e44c"
+          points="740.22 470.5 788.86 438.8 861.01 485.26 803.07 522.42 740.22 483.62 740.22 470.5"/>
+        <polygon class="f-y2" fill="#d4e44c"
+          points="740.22 579.26 803.62 539.37 803.62 532.26 867.02 492.36 867.02 566.69 740.22 645.94 740.22 579.26"/>
+      </svg>
+    </div>
+
+    <div class="wordmark">SABI</div>
+    <div class="tagline">Arts &amp; Prints</div>
+    <div class="rule" aria-hidden="true"></div>
+
+    <div class="status">
+      <span class="pulse" aria-hidden="true"></span>
+      <span>Something's being made</span>
+    </div>
+
+    <div class="countdown" role="timer" aria-label="Countdown to launch">
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-d">--</div>
+        <div class="cd-label">Days</div>
+      </div>
+      <div class="cd-sep" aria-hidden="true">:</div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-h">--</div>
+        <div class="cd-label">Hours</div>
+      </div>
+      <div class="cd-sep" aria-hidden="true">:</div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-m">--</div>
+        <div class="cd-label">Min</div>
+      </div>
+      <div class="cd-sep" aria-hidden="true">:</div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-s">--</div>
+        <div class="cd-label">Sec</div>
+      </div>
+    </div>
+
+    <div class="btn-wrap">
+      <button class="btn" onclick="openOverlay()" aria-haspopup="dialog">
+        What We Do <span class="btn-arrow" aria-hidden="true">→</span>
+      </button>
+    </div>
+
+    <div class="social">
+      <a href="#" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        Instagram
+      </a>
+      <a href="#" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook
+      </a>
+      <a href="#" aria-label="Pinterest">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+        Pinterest
+      </a>
+    </div>
+
+    <div class="foot">
+      <div class="foot-cmyk" aria-hidden="true">
+        <span class="foot-dot" style="background:#4DC8F0"></span>
+        <span class="foot-dot" style="background:#9B1D6E"></span>
+        <span class="foot-dot" style="background:#B8CC2B"></span>
+      </div>
+      <span class="foot-divider" aria-hidden="true">|</span>
+      <span>&copy; 2026 SABI Arts and Prints</span>
+      <span class="foot-divider" aria-hidden="true">|</span>
+      <span>Designed by <a href="https://dravobit.com" target="_blank" rel="noopener">Dravo™</a></span>
+    </div>
+
+  </section>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="What We Do">
+  <button class="overlay-close" onclick="closeOverlay()" aria-label="Close panel">
+    <span class="close-x" aria-hidden="true"></span>
+    Close
+  </button>
+  <div class="overlay-inner">
+    <div class="overlay-eyebrow">SABI Arts and Prints</div>
+    <div class="overlay-title">What We Do</div>
+    <div class="overlay-sub">Premium printing for artists, brands, and collectors — crafted with precision across every medium.</div>
+
+    <div class="services">
+      <div class="svc">
+        <div class="svc-num">01</div>
+        <svg class="svc-icon" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+          <rect x="3" y="4" width="24" height="22" rx="1.5" stroke="#1C1C1C" stroke-width="1.5"/>
+          <circle cx="6.5" cy="7.5" r="1.1" fill="#53b4f4"/>
+          <circle cx="23.5" cy="7.5" r="1.1" fill="#53b4f4"/>
+          <circle cx="6.5" cy="22.5" r="1.1" fill="#53b4f4"/>
+          <circle cx="23.5" cy="22.5" r="1.1" fill="#53b4f4"/>
+          <path d="M9 11h12" stroke="#53b4f4" stroke-width="1.3" stroke-linecap="round" opacity="0.7"/>
+          <path d="M9 15h12" stroke="#53b4f4" stroke-width="1.3" stroke-linecap="round" opacity="0.45"/>
+          <path d="M9 19h8" stroke="#53b4f4" stroke-width="1.3" stroke-linecap="round" opacity="0.25"/>
+        </svg>
+        <div class="svc-name">Metal Prints</div>
+        <div class="svc-desc">Vibrant dye-sublimation onto aluminum. Sharp, luminous, built to last a lifetime.</div>
+        <div class="svc-accent" style="background:#53b4f4"></div>
+      </div>
+      <div class="svc">
+        <div class="svc-num">02</div>
+        <svg class="svc-icon" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+          <rect x="4" y="4" width="22" height="22" rx="1" stroke="#1C1C1C" stroke-width="1.5"/>
+          <path d="M4 8h22M8 4v22" stroke="#a62561" stroke-width="1.5"/>
+          <path d="M13 15l3 3 5-5" stroke="#a62561" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="svc-name">Canvas Prints</div>
+        <div class="svc-desc">Gallery-wrapped canvas with archival inks. Exhibition quality, ready to hang.</div>
+        <div class="svc-accent" style="background:#a62561"></div>
+      </div>
+      <div class="svc">
+        <div class="svc-num">03</div>
+        <svg class="svc-icon" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+          <!-- Left sleeve -->
+          <path d="M11 4L4 8l3 5 4-2" stroke="#d4e44c" stroke-width="1.5" stroke-linejoin="round"/>
+          <!-- Right sleeve -->
+          <path d="M19 4l7 4-3 5-4-2" stroke="#d4e44c" stroke-width="1.5" stroke-linejoin="round"/>
+          <!-- Body -->
+          <path d="M11 4c0 0 1.5 3 4 3s4-3 4-3l4 7v13H7V11l4-7z" stroke="#1C1C1C" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <div class="svc-name">T-Shirt Prints</div>
+        <div class="svc-desc">DTG and screen printing on premium blanks. Retail-grade finish, no minimum fuss.</div>
+        <div class="svc-accent" style="background:#d4e44c"></div>
+      </div>
+      <div class="svc">
+        <div class="svc-num">04</div>
+        <svg class="svc-icon" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+          <path d="M15 3L3 9v12l12 6 12-6V9L15 3z" stroke="#1C1C1C" stroke-width="1.5"/>
+          <path d="M3 9l12 6m0 0l12-6m-12 6v12" stroke="#53b4f4" stroke-width="1.5"/>
+        </svg>
+        <div class="svc-name">3D Prints</div>
+        <div class="svc-desc">High-resolution FDM and resin printing for custom objects, prototypes, and sculptural pieces.</div>
+        <div class="svc-accent" style="background:#1C1C1C"></div>
+      </div>
+    </div>
+
+    <!-- FEATURE SECTION -->
+    <div class="feature-section">
+
+      <div class="feature-header">
+        <div class="feature-eyebrow">Coming with the full launch</div>
+        <div class="feature-main-title">See It Before You Print It</div>
+        <div class="feature-main-desc">Two tools that change how you buy prints — preview in your real space before ordering, or build your design from scratch in the editor.</div>
+      </div>
+
+      <div class="feature-cards">
+
+        <!-- AR PREVIEW CARD -->
+        <div class="feat-card">
+          <div class="feat-card-label feat-label-ar">AR Preview</div>
+          <div class="feat-card-title">Place prints in your space</div>
+          <div class="feat-wireframe">
+            <!-- Phone wireframe with scan reticle -->
+            <svg viewBox="0 0 160 200" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- Phone body -->
+              <rect x="30" y="8" width="100" height="184" rx="12" stroke="#444" stroke-width="1.5"/>
+              <!-- Phone screen -->
+              <rect x="36" y="22" width="88" height="152" rx="4" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+              <!-- Status bar -->
+              <rect x="60" y="14" width="40" height="5" rx="2.5" fill="#333"/>
+              <!-- Home indicator -->
+              <rect x="65" y="198" width="30" height="3" rx="1.5" fill="#444"/>
+
+              <!-- Wall perspective lines inside screen -->
+              <line x1="36" y1="22" x2="80" y2="75" stroke="#2a2a2a" stroke-width="0.8"/>
+              <line x1="124" y1="22" x2="80" y2="75" stroke="#2a2a2a" stroke-width="0.8"/>
+              <line x1="36" y1="174" x2="80" y2="75" stroke="#2a2a2a" stroke-width="0.8"/>
+              <line x1="124" y1="174" x2="80" y2="75" stroke="#2a2a2a" stroke-width="0.8"/>
+
+              <!-- Wall surface -->
+              <rect x="36" y="22" width="88" height="90" fill="#1e1e1e"/>
+              <rect x="36" y="112" width="88" height="62" fill="#141414"/>
+
+              <!-- Framed print on wall (AR placed) -->
+              <rect x="56" y="35" width="48" height="62" rx="1" fill="#111" stroke="#4DC8F0" stroke-width="1.2"/>
+              <!-- Print content (abstract) -->
+              <rect x="60" y="39" width="40" height="54" rx="1" fill="#1a2a3a"/>
+              <line x1="60" y1="55" x2="100" y2="55" stroke="#4DC8F0" stroke-width="0.6" opacity="0.4"/>
+              <line x1="60" y1="65" x2="100" y2="65" stroke="#4DC8F0" stroke-width="0.6" opacity="0.3"/>
+              <line x1="60" y1="75" x2="100" y2="75" stroke="#4DC8F0" stroke-width="0.6" opacity="0.2"/>
+              <circle cx="74" cy="47" r="5" fill="#4DC8F0" opacity="0.2"/>
+
+              <!-- Shadow under print -->
+              <rect x="58" y="97" width="44" height="3" rx="1" fill="#4DC8F0" opacity="0.08"/>
+
+              <!-- AR scan reticle corners -->
+              <path d="M50 28 L50 34 M50 28 L56 28" stroke="#4DC8F0" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M110 28 L110 34 M110 28 L104 28" stroke="#4DC8F0" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M50 106 L50 100 M50 106 L56 106" stroke="#4DC8F0" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M110 106 L110 100 M110 106 L104 106" stroke="#4DC8F0" stroke-width="1.4" stroke-linecap="round"/>
+
+              <!-- Floor line -->
+              <line x1="36" y1="112" x2="124" y2="112" stroke="#333" stroke-width="0.8"/>
+
+              <!-- Bottom UI bar -->
+              <rect x="36" y="150" width="88" height="24" fill="#111"/>
+              <!-- Size selector dots -->
+              <circle cx="63" cy="162" r="3" fill="#333"/>
+              <circle cx="75" cy="162" r="3" fill="#4DC8F0"/>
+              <circle cx="87" cy="162" r="3" fill="#333"/>
+              <!-- Place button -->
+              <rect x="96" y="156" width="24" height="12" rx="2" fill="#4DC8F0" opacity="0.9"/>
+              <text x="108" y="164.5" font-size="5" fill="#000" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-weight="700">PLACE</text>
+
+              <!-- AR dot indicator -->
+              <circle cx="116" cy="28" r="3" fill="#4DC8F0" opacity="0.9"/>
+              <circle cx="116" cy="28" r="5.5" stroke="#4DC8F0" stroke-width="0.8" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="feat-card-desc">Point your phone at any wall. Our AR engine overlays your chosen print at true scale — move it, resize it, swap finishes live before you order.</div>
+          <div class="feat-tags-row">
+            <span class="feat-pill feat-pill-ar">Metal · Canvas · Poster</span>
+            <span class="feat-pill feat-pill-ar">True Scale</span>
+          </div>
+        </div>
+
+        <!-- ONLINE EDITOR CARD -->
+        <div class="feat-card">
+          <div class="feat-card-label feat-label-ed">Online Editor</div>
+          <div class="feat-card-title">Design any format, in browser</div>
+          <div class="feat-wireframe">
+            <!-- Editor UI wireframe -->
+            <svg viewBox="0 0 200 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- Browser chrome -->
+              <rect x="4" y="4" width="192" height="172" rx="6" stroke="#444" stroke-width="1.2"/>
+              <!-- Title bar -->
+              <rect x="4" y="4" width="192" height="18" rx="6" fill="#1a1a1a"/>
+              <rect x="4" y="16" width="192" height="6" fill="#1a1a1a"/>
+              <!-- Traffic lights -->
+              <circle cx="16" cy="13" r="2.5" fill="#B8CC2B" opacity="0.7"/>
+              <circle cx="24" cy="13" r="2.5" fill="#9B1D6E" opacity="0.5"/>
+              <circle cx="32" cy="13" r="2.5" fill="#4DC8F0" opacity="0.5"/>
+              <!-- URL bar -->
+              <rect x="60" y="8" width="88" height="10" rx="3" fill="#252525"/>
+              <text x="104" y="15.5" font-size="4.5" fill="#555" text-anchor="middle" font-family="Helvetica Neue, sans-serif">editor.sabiarts.com</text>
+
+              <!-- TOOLBAR TOP -->
+              <rect x="4" y="22" width="192" height="20" fill="#161616"/>
+              <!-- Tool icons row -->
+              <!-- Select -->
+              <rect x="10" y="27" width="10" height="10" rx="1" fill="#252525"/>
+              <path d="M13 30 L13 36 L15.5 33.5 L17 36.5" stroke="#4DC8F0" stroke-width="0.9" stroke-linecap="round"/>
+              <!-- Text tool -->
+              <rect x="24" y="27" width="10" height="10" rx="1" fill="#252525"/>
+              <text x="29" y="35" font-size="7" fill="#B8CC2B" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-weight="700">T</text>
+              <!-- Shape tool -->
+              <rect x="38" y="27" width="10" height="10" rx="1" fill="#252525"/>
+              <rect x="40" y="29" width="6" height="6" rx="0.5" stroke="#aaa" stroke-width="0.9"/>
+              <!-- Image upload -->
+              <rect x="52" y="27" width="10" height="10" rx="1" fill="#252525"/>
+              <path d="M54 34 L57 30 L60 34" stroke="#aaa" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+              <!-- 3D cube tool -->
+              <rect x="66" y="27" width="10" height="10" rx="1" fill="#9B1D6E" opacity="0.6"/>
+              <path d="M69 34 L71 32 L73 34 L73 36 L71 37.5 L69 36 Z" stroke="#fff" stroke-width="0.7" fill="none"/>
+              <path d="M71 32 L71 37.5 M69 34 L73 34" stroke="#fff" stroke-width="0.5" opacity="0.6"/>
+              <!-- Divider -->
+              <line x1="82" y1="25" x2="82" y2="40" stroke="#2a2a2a" stroke-width="0.8"/>
+              <!-- Format selector -->
+              <rect x="86" y="27" width="22" height="10" rx="1" fill="#252525"/>
+              <text x="97" y="35" font-size="4.5" fill="#888" text-anchor="middle" font-family="Helvetica Neue, sans-serif">16×20 in</text>
+              <!-- Material dropdown -->
+              <rect x="112" y="27" width="26" height="10" rx="1" fill="#252525"/>
+              <text x="125" y="35" font-size="4.5" fill="#888" text-anchor="middle" font-family="Helvetica Neue, sans-serif">Metal Print</text>
+              <!-- Spacer -->
+              <line x1="144" y1="25" x2="144" y2="40" stroke="#2a2a2a" stroke-width="0.8"/>
+              <!-- Export button -->
+              <rect x="148" y="27" width="20" height="10" rx="2" fill="#B8CC2B" opacity="0.9"/>
+              <text x="158" y="35" font-size="4.5" fill="#111" text-anchor="middle" font-family="Helvetica Neue, sans-serif" font-weight="700">ORDER</text>
+              <!-- Undo/redo -->
+              <text x="176" y="35" font-size="8" fill="#555" text-anchor="middle" font-family="Helvetica Neue, sans-serif">↺</text>
+              <text x="186" y="35" font-size="8" fill="#555" text-anchor="middle" font-family="Helvetica Neue, sans-serif">↻</text>
+
+              <!-- LEFT PANEL -->
+              <rect x="4" y="42" width="36" height="130" fill="#141414"/>
+              <!-- Panel label -->
+              <text x="22" y="54" font-size="4" fill="#444" text-anchor="middle" font-family="Helvetica Neue, sans-serif" letter-spacing="1">LAYERS</text>
+              <!-- Layer rows -->
+              <rect x="8" y="58" width="28" height="9" rx="1" fill="#1e1e1e"/>
+              <rect x="10" y="60" width="5" height="5" rx="0.5" fill="#4DC8F0" opacity="0.6"/>
+              <text x="18" y="65.5" font-size="3.5" fill="#666" font-family="Helvetica Neue, sans-serif">Background</text>
+
+              <rect x="8" y="69" width="28" height="9" rx="1" fill="#252525"/>
+              <rect x="10" y="71" width="5" height="5" rx="0.5" fill="#B8CC2B" opacity="0.7"/>
+              <text x="18" y="76.5" font-size="3.5" fill="#aaa" font-family="Helvetica Neue, sans-serif">Artwork</text>
+
+              <rect x="8" y="80" width="28" height="9" rx="1" fill="#1e1e1e"/>
+              <rect x="10" y="82" width="5" height="5" rx="0.5" fill="#9B1D6E" opacity="0.7"/>
+              <text x="18" y="87.5" font-size="3.5" fill="#666" font-family="Helvetica Neue, sans-serif">Text layer</text>
+
+              <text x="22" y="104" font-size="4" fill="#444" text-anchor="middle" font-family="Helvetica Neue, sans-serif" letter-spacing="1">ASSETS</text>
+              <!-- Mini thumbnails -->
+              <rect x="8" y="108" width="12" height="12" rx="1" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.5"/>
+              <rect x="22" y="108" width="12" height="12" rx="1" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.5"/>
+              <rect x="8" y="122" width="12" height="12" rx="1" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.5"/>
+              <rect x="22" y="122" width="12" height="12" rx="1" fill="#1e1e1e" stroke="#2a2a2a" stroke-width="0.5"/>
+
+              <!-- MAIN CANVAS -->
+              <rect x="40" y="42" width="120" height="130" fill="#0f0f0f"/>
+              <!-- Canvas grid dots -->
+              <circle cx="60" cy="62" r="0.6" fill="#222"/>
+              <circle cx="80" cy="62" r="0.6" fill="#222"/>
+              <circle cx="100" cy="62" r="0.6" fill="#222"/>
+              <circle cx="120" cy="62" r="0.6" fill="#222"/>
+              <circle cx="140" cy="62" r="0.6" fill="#222"/>
+              <circle cx="60" cy="82" r="0.6" fill="#222"/>
+              <circle cx="80" cy="82" r="0.6" fill="#222"/>
+              <circle cx="100" cy="82" r="0.6" fill="#222"/>
+              <circle cx="120" cy="82" r="0.6" fill="#222"/>
+              <circle cx="140" cy="82" r="0.6" fill="#222"/>
+              <circle cx="60" cy="102" r="0.6" fill="#222"/>
+              <circle cx="80" cy="102" r="0.6" fill="#222"/>
+              <circle cx="100" cy="102" r="0.6" fill="#222"/>
+              <circle cx="120" cy="102" r="0.6" fill="#222"/>
+              <circle cx="140" cy="102" r="0.6" fill="#222"/>
+              <circle cx="60" cy="122" r="0.6" fill="#222"/>
+              <circle cx="80" cy="122" r="0.6" fill="#222"/>
+              <circle cx="100" cy="122" r="0.6" fill="#222"/>
+              <circle cx="120" cy="122" r="0.6" fill="#222"/>
+              <circle cx="140" cy="122" r="0.6" fill="#222"/>
+              <circle cx="60" cy="142" r="0.6" fill="#222"/>
+              <circle cx="80" cy="142" r="0.6" fill="#222"/>
+              <circle cx="100" cy="142" r="0.6" fill="#222"/>
+              <circle cx="120" cy="142" r="0.6" fill="#222"/>
+              <circle cx="140" cy="142" r="0.6" fill="#222"/>
+
+              <!-- Canvas art piece (print design) -->
+              <rect x="60" y="58" width="80" height="90" rx="1" fill="#141414" stroke="#2a2a2a" stroke-width="0.8"/>
+              <!-- Abstract design inside canvas -->
+              <rect x="65" y="63" width="70" height="80" rx="1" fill="#1a1a1a"/>
+              <rect x="70" y="68" width="30" height="35" rx="1" fill="#4DC8F0" opacity="0.15"/>
+              <rect x="90" y="80" width="40" height="25" rx="1" fill="#9B1D6E" opacity="0.15"/>
+              <path d="M70 110 Q90 88 115 95 Q130 100 135 85" stroke="#B8CC2B" stroke-width="1" opacity="0.5" fill="none"/>
+              <circle cx="85" cy="80" r="8" fill="#4DC8F0" opacity="0.1" stroke="#4DC8F0" stroke-width="0.6" opacity="0.3"/>
+
+              <!-- 3D object preview (small, bottom right of canvas) -->
+              <rect x="118" y="118" width="26" height="22" rx="2" fill="#1a1a1a" stroke="#9B1D6E" stroke-width="0.8"/>
+              <path d="M122 132 L127 127 L136 127 L136 136 L127 136 Z" stroke="#B8CC2B" stroke-width="0.8" fill="none"/>
+              <path d="M127 127 L131 124 L140 124 L140 133 L136 136" stroke="#B8CC2B" stroke-width="0.8" fill="none" opacity="0.5"/>
+              <line x1="136" y1="127" x2="140" y2="124" stroke="#B8CC2B" stroke-width="0.6" opacity="0.4"/>
+              <text x="131" y="142" font-size="3" fill="#9B1D6E" text-anchor="middle" font-family="Helvetica Neue, sans-serif">3D</text>
+
+              <!-- Selection handles on art piece -->
+              <rect x="59" y="57" width="82" height="92" rx="1" stroke="#4DC8F0" stroke-width="0.8" stroke-dasharray="3 2"/>
+              <rect x="57" y="55" width="4" height="4" rx="0.5" fill="#4DC8F0"/>
+              <rect x="139" y="55" width="4" height="4" rx="0.5" fill="#4DC8F0"/>
+              <rect x="57" y="147" width="4" height="4" rx="0.5" fill="#4DC8F0"/>
+              <rect x="139" y="147" width="4" height="4" rx="0.5" fill="#4DC8F0"/>
+              <rect x="98" y="55" width="4" height="4" rx="0.5" fill="#4DC8F0" opacity="0.6"/>
+              <rect x="98" y="147" width="4" height="4" rx="0.5" fill="#4DC8F0" opacity="0.6"/>
+
+              <!-- RIGHT PANEL -->
+              <rect x="160" y="42" width="36" height="130" fill="#141414"/>
+              <text x="178" y="54" font-size="4" fill="#444" text-anchor="middle" font-family="Helvetica Neue, sans-serif" letter-spacing="1">FINISH</text>
+              <!-- Finish options -->
+              <rect x="164" y="58" width="28" height="8" rx="1" fill="#1e1e1e"/>
+              <text x="178" y="64" font-size="3.5" fill="#888" text-anchor="middle" font-family="Helvetica Neue, sans-serif">Gloss</text>
+              <rect x="164" y="68" width="28" height="8" rx="1" fill="#252525" stroke="#4DC8F0" stroke-width="0.6"/>
+              <text x="178" y="74" font-size="3.5" fill="#4DC8F0" text-anchor="middle" font-family="Helvetica Neue, sans-serif">Matte ✓</text>
+              <rect x="164" y="78" width="28" height="8" rx="1" fill="#1e1e1e"/>
+              <text x="178" y="84" font-size="3.5" fill="#888" text-anchor="middle" font-family="Helvetica Neue, sans-serif">Satin</text>
+
+              <text x="178" y="100" font-size="4" fill="#444" text-anchor="middle" font-family="Helvetica Neue, sans-serif" letter-spacing="1">SIZE</text>
+              <rect x="164" y="103" width="28" height="8" rx="1" fill="#1e1e1e"/>
+              <text x="178" y="109" font-size="3.5" fill="#888" text-anchor="middle" font-family="Helvetica Neue, sans-serif">12×16</text>
+              <rect x="164" y="113" width="28" height="8" rx="1" fill="#252525" stroke="#B8CC2B" stroke-width="0.6"/>
+              <text x="178" y="119" font-size="3.5" fill="#B8CC2B" text-anchor="middle" font-family="Helvetica Neue, sans-serif">16×20 ✓</text>
+              <rect x="164" y="123" width="28" height="8" rx="1" fill="#1e1e1e"/>
+              <text x="178" y="129" font-size="3.5" fill="#888" text-anchor="middle" font-family="Helvetica Neue, sans-serif">24×36</text>
+
+              <!-- Preview in AR button -->
+              <rect x="162" y="148" width="32" height="12" rx="2" fill="#4DC8F0" opacity="0.15" stroke="#4DC8F0" stroke-width="0.6"/>
+              <text x="178" y="156" font-size="3.5" fill="#4DC8F0" text-anchor="middle" font-family="Helvetica Neue, sans-serif">View in AR</text>
+            </svg>
+          </div>
+          <div class="feat-card-desc">Design metal, canvas, poster, t-shirt, or 3D pieces in one place. Upload your artwork, pick your finish and size, preview in 3D — then send straight to print.</div>
+          <div class="feat-tags-row">
+            <span class="feat-pill feat-pill-ed">All Print Types</span>
+            <span class="feat-pill feat-pill-ed">3D Preview</span>
+            <span class="feat-pill feat-pill-ed">Custom Size</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="overlay-note">Full site launching July 15, 2026</div>
+  </div>
+</div>
+
+<div class="cmyk-bottom" aria-hidden="true">
+  <span class="cb-c"></span><span class="cb-m"></span><span class="cb-y"></span>
+</div>
+
+<script>
+
+/* ─── LOADER DISMISS ─── */
+(function() {
+  var minDuration = 2200;
+  var startTime = Date.now();
+  var pageLoaded = false;
+  var timerDone  = false;
+
+  function tryHide() {
+    if (pageLoaded && timerDone) {
+      var loader = document.getElementById('loader');
+      if (loader) loader.classList.add('hidden');
+    }
+  }
+
+  window.addEventListener('load', function() {
+    pageLoaded = true;
+    tryHide();
+  });
+
+  setTimeout(function() {
+    timerDone = true;
+    tryHide();
+  }, minDuration);
+})();
+
+/* ─── COUNTDOWN ─── */
+(function() {
+  var launch = new Date('2026-07-15T00:00:00');
+  function pad(n) { return String(Math.floor(n)).padStart(2, '0'); }
+  function tick() {
+    var diff = launch.getTime() - Date.now();
+    if (diff < 0) diff = 0;
+    document.getElementById('cd-d').textContent = pad(diff / 86400000);
+    document.getElementById('cd-h').textContent = pad((diff % 86400000) / 3600000);
+    document.getElementById('cd-m').textContent = pad((diff % 3600000) / 60000);
+    document.getElementById('cd-s').textContent = pad((diff % 60000) / 1000);
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+
+/* ─── OVERLAY ─── */
+function openOverlay() {
+  var o = document.getElementById('overlay');
+  o.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeOverlay() {
+  var o = document.getElementById('overlay');
+  o.classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeOverlay();
+});
+
+/* ─── PARTICLE SYSTEM ─── */
+(function() {
+  var canvas = document.getElementById('particle-canvas');
+  var ctx = canvas.getContext('2d');
+  var W, H, logoBox;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    /* Recalculate logo centre from DOM */
+    var el = document.getElementById('logo-wrap');
+    if (el) {
+      var r = el.getBoundingClientRect();
+      logoBox = {
+        cx: r.left + r.width  * 0.5,
+        cy: r.top  + r.height * 0.5,
+        w:  r.width,
+        h:  r.height
+      };
+    }
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+  /* Re-measure after fonts / layout settle */
+  setTimeout(resize, 400);
+
+  var COLORS = ['#4DC8F0', '#9B1D6E', '#B8CC2B'];
+
+  /* Generate points on a regular hexagon outline
+     cx,cy = centre  r = radius  scatter = random offset per point */
+  function hexRingPoints(cx, cy, r, count, scatter) {
+    var pts = [];
+    for (var i = 0; i < count; i++) {
+      /* Distribute evenly around 6 edges */
+      var edge    = Math.floor(i / (count / 6));
+      var edgeFrac = (i % (count / 6)) / (count / 6);
+      var a1 = (Math.PI / 3) * edge       - Math.PI / 6;
+      var a2 = (Math.PI / 3) * (edge + 1) - Math.PI / 6;
+      var px = cx + Math.cos(a1 + (a2 - a1) * edgeFrac) * r;
+      var py = cy + Math.sin(a1 + (a2 - a1) * edgeFrac) * r;
+      /* Add loose halo scatter */
+      var angle  = Math.random() * Math.PI * 2;
+      var offset = (Math.random() - 0.5) * scatter;
+      pts.push({
+        x: px + Math.cos(angle) * offset,
+        y: py + Math.sin(angle) * offset
+      });
+    }
+    return pts;
+  }
+
+  function rand(a, b) { return a + Math.random() * (b - a); }
+
+  /* Easing */
+  function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+  function easeInExpo(t)  { return t === 0 ? 0 : Math.pow(2, 10 * t - 10); }
+  function easeInOutCubic(t) { return t < 0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+
+  var TOTAL = window.innerWidth < 600 ? 54 : 72;
+
+  /* Phase timings in milliseconds — generous for smoothness */
+  var T_DELAY_START  = 2800;  /* wait for logo to finish drawing */
+  var T_RISE_DUR     = 2200;  /* particles rise from bottom */
+  var T_CONVERGE_DUR = 1800;  /* particles converge to hex ring */
+  var T_HOLD_DUR     = 1400;  /* hold the ring */
+  var T_DISPERSE_DUR = 1600;  /* smooth outward disperse */
+  var T_FADE_DUR     = 1000;  /* fade to ambient after disperse */
+
+  /* Phases */
+  var PHASE_IDLE     = 0;
+  var PHASE_RISE     = 1;
+  var PHASE_CONVERGE = 2;
+  var PHASE_HOLD     = 3;
+  var PHASE_DISPERSE = 4;
+  var PHASE_AMBIENT  = 5;
+
+  var phase     = PHASE_IDLE;
+  var phaseStart = 0;
+  var startTime  = null;
+
+  var particles = [];
+
+  function initParticles() {
+    var box = logoBox || { cx: W * 0.5, cy: H * 0.42, w: 160, h: 106 };
+    /* Hex ring radius = slightly larger than logo */
+    var hexR = Math.max(box.w, box.h) * 0.78;
+    var targets = hexRingPoints(box.cx, box.cy, hexR, TOTAL, hexR * 0.22);
+
+    particles = [];
+    for (var i = 0; i < TOTAL; i++) {
+      var col = COLORS[i % COLORS.length];
+      /* Start scattered below the visible area */
+      var sx = rand(W * 0.1, W * 0.9);
+      var sy = rand(H + 40, H + 160);
+      particles.push({
+        /* current */
+        x: sx, y: sy,
+        /* rise start */
+        sx: sx, sy: sy,
+        /* rise destination — land scattered behind/at the logo centre */
+        rx: rand(box.cx - box.w * 0.9, box.cx + box.w * 0.9),
+        ry: rand(box.cy - box.h * 0.3, box.cy + box.h * 0.5),
+        /* hex ring target */
+        tx: targets[i].x,
+        ty: targets[i].y,
+        /* disperse velocity (set when disperse begins) */
+        dvx: 0, dvy: 0,
+        /* ambient drift */
+        avx: rand(-0.15, 0.15),
+        avy: rand(-0.22, -0.06),
+        /* visual */
+        r: rand(2.2, 4.2),
+        alpha: 0,
+        color: col,
+        /* per-particle time offset for organic feel */
+        offset: rand(0, 0.15)
+      });
+    }
+  }
+
+  /* Smooth lerp */
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function setPhase(p, now) {
+    phase = p;
+    phaseStart = now;
+  }
+
+  var animStart = null;
+
+  function draw(ts) {
+    if (!animStart) animStart = ts;
+    var elapsed = ts - animStart;
+
+    ctx.clearRect(0, 0, W, H);
+
+    /* ── Phase transitions ── */
+    if (phase === PHASE_IDLE && elapsed >= T_DELAY_START) {
+      resize(); /* measure logo position fresh */
+      initParticles();
+      setPhase(PHASE_RISE, ts);
+    }
+
+    var t = (ts - phaseStart);
+
+    if (phase === PHASE_RISE && t >= T_RISE_DUR) {
+      setPhase(PHASE_CONVERGE, ts); t = 0;
+    } else if (phase === PHASE_CONVERGE && t >= T_CONVERGE_DUR) {
+      setPhase(PHASE_HOLD, ts); t = 0;
+    } else if (phase === PHASE_HOLD && t >= T_HOLD_DUR) {
+      /* Assign disperse velocities */
+      var box2 = logoBox || { cx: W * 0.5, cy: H * 0.42 };
+      particles.forEach(function(p) {
+        var dx = p.x - box2.cx;
+        var dy = p.y - box2.cy;
+        var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        var speed = rand(3.5, 7.5);
+        p.dvx = (dx / dist) * speed + rand(-1, 1);
+        p.dvy = (dy / dist) * speed + rand(-2, 0.5);
+        p.dispX = p.x;
+        p.dispY = p.y;
+      });
+      setPhase(PHASE_DISPERSE, ts); t = 0;
+    } else if (phase === PHASE_DISPERSE && t >= T_DISPERSE_DUR + T_FADE_DUR) {
+      /* Anchor ambient start */
+      particles.forEach(function(p) { p.ax = p.x; p.ay = p.y; });
+      setPhase(PHASE_AMBIENT, ts); t = 0;
+    }
+
+    /* ── Update & draw ── */
+    particles.forEach(function(p) {
+      var prog, ease;
+
+      if (phase === PHASE_IDLE) {
+        return; /* don't draw yet */
+
+      } else if (phase === PHASE_RISE) {
+        prog = Math.min((t / T_RISE_DUR) + p.offset, 1);
+        ease = easeOutExpo(prog);
+        p.x = lerp(p.sx, p.rx, ease);
+        p.y = lerp(p.sy, p.ry, ease);
+        p.alpha = Math.min(prog * 2.5, 0.45);
+
+      } else if (phase === PHASE_CONVERGE) {
+        prog = Math.min((t / T_CONVERGE_DUR) - p.offset * 0.5, 1);
+        prog = Math.max(prog, 0);
+        ease = easeInOutCubic(prog);
+        p.x = lerp(p.rx, p.tx, ease);
+        p.y = lerp(p.ry, p.ty, ease);
+        p.alpha = lerp(0.45, 0.72, ease);
+
+      } else if (phase === PHASE_HOLD) {
+        /* Gentle breathe on the ring */
+        var breathe = Math.sin(ts * 0.0018 + p.r * 0.8) * 1.8;
+        p.x = p.tx + Math.cos(ts * 0.0012 + p.r) * breathe;
+        p.y = p.ty + Math.sin(ts * 0.0012 + p.r) * breathe;
+        p.alpha = 0.72;
+
+      } else if (phase === PHASE_DISPERSE) {
+        prog = Math.min(t / T_DISPERSE_DUR, 1);
+        ease = easeOutExpo(prog);
+        p.x = p.dispX + p.dvx * ease * 80;
+        p.y = p.dispY + p.dvy * ease * 80;
+        /* fade out smoothly */
+        var fadeProg = Math.min(t / (T_DISPERSE_DUR + T_FADE_DUR), 1);
+        p.alpha = lerp(0.72, 0.08, easeInOutCubic(fadeProg));
+
+      } else if (phase === PHASE_AMBIENT) {
+        p.x += p.avx;
+        p.y += p.avy;
+        /* very soft pulse */
+        p.alpha = 0.07 + Math.abs(Math.sin(ts * 0.0004 + p.r * 1.3)) * 0.06;
+        /* wrap around viewport */
+        if (p.x < -20)    p.x = W + 20;
+        if (p.x > W + 20) p.x = -20;
+        if (p.y < -20)    p.y = H + 20;
+        if (p.y > H + 20) p.y = -20;
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
+      ctx.fill();
+    });
+
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+
+  requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
